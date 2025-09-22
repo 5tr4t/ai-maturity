@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Survey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .survey-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f3f4;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #f1f3f4;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00D1FF 0%, #0099cc 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .question-group {
+            margin-bottom: 35px;
+            padding: 25px;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            background: #fafbfc;
+        }
+
+        .question-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .scale-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .scale-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .scale-labels span {
+            font-weight: 500;
+        }
+
+        .radio-scale {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .radio-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+            width: 0;
+            height: 0;
+        }
+
+        .radio-option label {
+            display: block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            border-color: #00D1FF;
+            background: #00D1FF;
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 209, 255, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1em;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.2s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #00D1FF;
+            box-shadow: 0 0 0 3px rgba(0, 209, 255, 0.1);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f3f4;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #00D1FF;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0099cc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 209, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .page-indicator {
+            font-size: 0.9em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .thank-you {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .thank-you h2 {
+            color: #00D1FF;
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+
+        .thank-you p {
+            font-size: 1.1em;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="survey-card">
+            <div class="header">
+                <h1>Professional Assessment Survey</h1>
+                <p>Your insights help us understand and improve. Please take a few minutes to share your experience.</p>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <!-- Page 1 -->
+            <div class="page active" id="page1">
+                <div class="question-group">
+                    <div class="question-title">1. How would you rate the overall quality of our service?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Poor</span>
+                            <span>Average</span>
+                            <span>Excellent</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q1" value="1" id="q1_1">
+                                <label for="q1_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q1" value="2" id="q1_2">
+                                <label for="q1_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q1" value="3" id="q1_3">
+                                <label for="q1_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q1" value="4" id="q1_4">
+                                <label for="q1_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q1" value="5" id="q1_5">
+                                <label for="q1_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">2. How responsive was our team to your needs?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Very Slow</span>
+                            <span>Adequate</span>
+                            <span>Very Fast</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q2" value="1" id="q2_1">
+                                <label for="q2_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q2" value="2" id="q2_2">
+                                <label for="q2_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q2" value="3" id="q2_3">
+                                <label for="q2_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q2" value="4" id="q2_4">
+                                <label for="q2_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q2" value="5" id="q2_5">
+                                <label for="q2_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">3. How clear was the communication throughout the process?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Unclear</span>
+                            <span>Satisfactory</span>
+                            <span>Very Clear</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q3" value="1" id="q3_1">
+                                <label for="q3_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q3" value="2" id="q3_2">
+                                <label for="q3_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q3" value="3" id="q3_3">
+                                <label for="q3_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q3" value="4" id="q3_4">
+                                <label for="q3_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q3" value="5" id="q3_5">
+                                <label for="q3_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">4. How well did the solution meet your expectations?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Below Expectations</span>
+                            <span>Met Expectations</span>
+                            <span>Exceeded Expectations</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q4" value="1" id="q4_1">
+                                <label for="q4_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q4" value="2" id="q4_2">
+                                <label for="q4_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q4" value="3" id="q4_3">
+                                <label for="q4_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q4" value="4" id="q4_4">
+                                <label for="q4_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q4" value="5" id="q4_5">
+                                <label for="q4_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">5. How likely are you to recommend us to others?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Not Likely</span>
+                            <span>Maybe</span>
+                            <span>Very Likely</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q5" value="1" id="q5_1">
+                                <label for="q5_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q5" value="2" id="q5_2">
+                                <label for="q5_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q5" value="3" id="q5_3">
+                                <label for="q5_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q5" value="4" id="q5_4">
+                                <label for="q5_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q5" value="5" id="q5_5">
+                                <label for="q5_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page 2 -->
+            <div class="page" id="page2">
+                <div class="question-group">
+                    <div class="question-title">6. How easy was it to get started with our service?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Very Difficult</span>
+                            <span>Moderate</span>
+                            <span>Very Easy</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q6" value="1" id="q6_1">
+                                <label for="q6_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q6" value="2" id="q6_2">
+                                <label for="q6_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q6" value="3" id="q6_3">
+                                <label for="q6_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q6" value="4" id="q6_4">
+                                <label for="q6_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q6" value="5" id="q6_5">
+                                <label for="q6_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">7. How would you rate the value for money?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Poor Value</span>
+                            <span>Fair Value</span>
+                            <span>Excellent Value</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q7" value="1" id="q7_1">
+                                <label for="q7_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q7" value="2" id="q7_2">
+                                <label for="q7_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q7" value="3" id="q7_3">
+                                <label for="q7_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q7" value="4" id="q7_4">
+                                <label for="q7_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q7" value="5" id="q7_5">
+                                <label for="q7_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">8. How satisfied are you with the support provided?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Very Unsatisfied</span>
+                            <span>Neutral</span>
+                            <span>Very Satisfied</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q8" value="1" id="q8_1">
+                                <label for="q8_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q8" value="2" id="q8_2">
+                                <label for="q8_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q8" value="3" id="q8_3">
+                                <label for="q8_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q8" value="4" id="q8_4">
+                                <label for="q8_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q8" value="5" id="q8_5">
+                                <label for="q8_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">9. How intuitive was the user experience?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Confusing</span>
+                            <span>Acceptable</span>
+                            <span>Very Intuitive</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q9" value="1" id="q9_1">
+                                <label for="q9_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q9" value="2" id="q9_2">
+                                <label for="q9_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q9" value="3" id="q9_3">
+                                <label for="q9_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q9" value="4" id="q9_4">
+                                <label for="q9_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q9" value="5" id="q9_5">
+                                <label for="q9_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">10. How well did we understand your requirements?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Poorly</span>
+                            <span>Adequately</span>
+                            <span>Perfectly</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q10" value="1" id="q10_1">
+                                <label for="q10_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q10" value="2" id="q10_2">
+                                <label for="q10_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q10" value="3" id="q10_3">
+                                <label for="q10_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q10" value="4" id="q10_4">
+                                <label for="q10_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q10" value="5" id="q10_5">
+                                <label for="q10_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue with similar patterns for pages 3-5 -->
+            <!-- Page 3 -->
+            <div class="page" id="page3">
+                <div class="question-group">
+                    <div class="question-title">11. How reliable has the service been for you?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Unreliable</span>
+                            <span>Mostly Reliable</span>
+                            <span>Very Reliable</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q11" value="1" id="q11_1">
+                                <label for="q11_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q11" value="2" id="q11_2">
+                                <label for="q11_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q11" value="3" id="q11_3">
+                                <label for="q11_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q11" value="4" id="q11_4">
+                                <label for="q11_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q11" value="5" id="q11_5">
+                                <label for="q11_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">12. How would you rate the innovation in our solution?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Outdated</span>
+                            <span>Standard</span>
+                            <span>Innovative</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q12" value="1" id="q12_1">
+                                <label for="q12_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q12" value="2" id="q12_2">
+                                <label for="q12_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q12" value="3" id="q12_3">
+                                <label for="q12_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q12" value="4" id="q12_4">
+                                <label for="q12_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q12" value="5" id="q12_5">
+                                <label for="q12_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">13. How professional was our team's conduct?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Unprofessional</span>
+                            <span>Professional</span>
+                            <span>Highly Professional</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q13" value="1" id="q13_1">
+                                <label for="q13_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q13" value="2" id="q13_2">
+                                <label for="q13_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q13" value="3" id="q13_3">
+                                <label for="q13_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q13" value="4" id="q13_4">
+                                <label for="q13_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q13" value="5" id="q13_5">
+                                <label for="q13_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">14. How satisfied are you with the project timeline?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Too Slow</span>
+                            <span>Acceptable</span>
+                            <span>Perfect Timing</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q14" value="1" id="q14_1">
+                                <label for="q14_1">1</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q14" value="2" id="q14_2">
+                                <label for="q14_2">2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q14" value="3" id="q14_3">
+                                <label for="q14_3">3</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q14" value="4" id="q14_4">
+                                <label for="q14_4">4</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" name="q14" value="5" id="q14_5">
+                                <label for="q14_5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-group">
+                    <div class="question-title">15. How would you rate our problem-solving ability?</div>
+                    <div class="scale-container">
+                        <div class="scale-labels">
+                            <span>Poor</span>
+                            <span>Good</span>
+                            <span>Excellent</span>
+                        </div>
+                        <div class="radio-scale">
+                            <div class="radio-option">
+                                <input type="radio" name="q15" value="1" id="q15_1">
+                                <label for="q15_1">1</label>
+                            </div>
