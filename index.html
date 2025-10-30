@@ -147,21 +147,19 @@
 
         .scale-labels span:nth-child(1) {
             text-align: left;
+            grid-column: 1;
         }
 
-        .scale-labels span:nth-child(2),
-        .scale-labels span:nth-child(4) {
-            visibility: hidden;
+        .scale-labels span:nth-child(2) {
+            text-align: center;
+            grid-column: 3;
         }
 
         .scale-labels span:nth-child(3) {
-            text-align: center;
-        }
-
-        .scale-labels span:nth-child(5) {
             text-align: right;
+            grid-column: 5;
         }
-       
+               
         .radio-scale {
             display: flex;
             justify-content: space-between;
