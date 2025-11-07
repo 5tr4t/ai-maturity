@@ -1056,7 +1056,6 @@
                     </div>
                 </div>
 
-                //Added hidden input
                 <input type="hidden" id="companyCode" name="companyCode" />
                 
                 <!-- Submit Section -->
@@ -1068,7 +1067,17 @@
             </form>
         </div>
     </div>
-
+    
+    <script>
+      window.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get('companyCode');
+        if (code) {
+          document.getElementById('companyCode').value = code;
+        }
+      });
+    </script>
+    
     <script>
         // Progress tracking
         const totalQuestions = 20;
