@@ -1138,9 +1138,17 @@
         document.getElementById('surveyForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // Disable submit button immediately to prevent double-submit
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
             // Collect all form data
             const formData = new FormData(this);
             const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
             
             // Get all responses
             for (let [key, value] of formData.entries()) {
@@ -1152,8 +1160,7 @@
             // Here you would typically send the data to your n8n webhook
             // Replace 'YOUR_N8N_WEBHOOK_URL' with your actual webhook URL
             
-            
-            fetch('https://str4t.app.n8n.cloud/webhook-test/bc1d81d2-08c4-40b4-a5f8-f9dbc7a04746', {
+            fetch('https://str4t.app.n8n.cloud/webhook/bc1d81d2-08c4-40b4-a5f8-f9dbc7a04746', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -1163,15 +1170,42 @@
             .then(response => response.json())
             .then(result => {
                 console.log('Success:', result);
-                // Redirect to results page or show success message
-            })
+                // Hide form and show success message (replaces page content)
+                const container = document.querySelector('.container');
+                container.innerHTML = `
+                  <div class="success-message" style="
+                    text-align: center; 
+                    padding: 60px 20px; 
+                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                    border-radius: 16px;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                    max-width: 600px;
+                    margin: 40px auto;
+                  ">
+                    <div style="font-size: 4em; color: #00D1FF; margin-bottom: 20px;">✅</div>
+                    <h1 style="font-size: 2.2em; font-weight: 700; color: #333; margin-bottom: 15px;">Thank you!</h1>
+                    <p style="font-size: 1.2em; color: #666; line-height: 1.6; margin-bottom: 20px;">
+                      Your AI Maturity Assessment has been submitted successfully. 
+                      Once all responses are received, we will prepare the report and send it to the survey organiser.
+                    </p>
+                  </div>
+                `;
+    
+                // Hide progress bar too
+                document.querySelector('.progress-container').style.display = 'none';
+                document.body.style.paddingTop = '0';
+              })
+                
             .catch(error => {
                 console.error('Error:', error);
+                alert('Submission failed. Please try again.'); // Fallback
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Assessment';
             });
             
             
             // For now, show success message
-            alert('Thank you! Your AI Maturity Assessment has been submitted successfully. Once all responses are received, we will prepare the report and send it to the survey organiser.');
+            // alert('Thank you! Your AI Maturity Assessment has been submitted successfully. Once all responses are received, we will prepare the report and send it to the survey organiser.');
         });
         
         // Initialize progress on page load
