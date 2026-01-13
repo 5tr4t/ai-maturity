@@ -1162,6 +1162,11 @@
 
             function showSuccessMessage() {
               const container = document.querySelector('.container');
+              if (!container) {
+                console.error('Container not found');
+                return;
+              }
+              
               container.innerHTML = `
                 <div class="success-message" style="
                   text-align: center; 
@@ -1180,11 +1185,15 @@
                   </p>
                 </div>
               `;
-            
-              document.querySelector('.progress-container').style.display = 'none';
+              
+              // Safe hide progress bar
+              const progressContainer = document.querySelector('.progress-container');
+              if (progressContainer) {
+                progressContainer.style.display = 'none';
+              }
               document.body.style.paddingTop = '0';
             }
-            
+                        
             fetch('https://str4t.app.n8n.cloud/webhook/bc1d81d2-08c4-40b4-a5f8-f9dbc7a04746', {
                 method: 'POST',
                 headers: {
