@@ -1159,28 +1159,6 @@
             
             // Here you would typically send the data to your n8n webhook
             // Replace 'YOUR_N8N_WEBHOOK_URL' with your actual webhook URL
-            
-            fetch('https://str4t.app.n8n.cloud/webhook/bc1d81d2-08c4-40b4-a5f8-f9dbc7a04746', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-                
-            .then(response => {
-              if (response.ok) {
-                showSuccessMessage();   // <- call it here
-              } else {
-                throw new Error(`HTTP error: ${response.status}`);
-              }
-            })
-            .catch(error => {
-              console.error('Error:', error);
-              submitBtn.disabled = false;
-              submitBtn.textContent = 'Submit Assessment';
-              alert('Submission failed. Please try again.');
-            });
 
             function showSuccessMessage() {
               const container = document.querySelector('.container');
@@ -1206,6 +1184,29 @@
               document.querySelector('.progress-container').style.display = 'none';
               document.body.style.paddingTop = '0';
             }
+            
+            fetch('https://str4t.app.n8n.cloud/webhook/bc1d81d2-08c4-40b4-a5f8-f9dbc7a04746', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+                
+            .then(response => {
+              console.log('Response status:', response.status);  // Debug: should be 200
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+              }
+              showSuccessMessage();  // Direct success, no parsing
+            })
+                
+            .catch(error => {
+              console.error('Error:', error);
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Submit Assessment';
+              alert('Submission failed. Please try again.');
+            });
              
             // For now, show success message
             // alert('Thank you! Your AI Maturity Assessment has been submitted successfully. Once all responses are received, we will prepare the report and send it to the survey organiser.');
