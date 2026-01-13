@@ -1161,38 +1161,28 @@
             // Replace 'YOUR_N8N_WEBHOOK_URL' with your actual webhook URL
 
             function showSuccessMessage() {
-              console.log('=== DEBUG showSuccessMessage START ===');
-              
-              console.log('1. document readyState:', document.readyState);
-              console.log('2. body exists:', !!document.body);
-              
               const container = document.querySelector('.container');
-              console.log('3. container found:', !!container);
-              if (!container) {
-                console.error('CONTAINER NULL - stopping');
-                return;
-              }
+              if (!container) return;
               
-              console.log('4. Replacing container HTML...');
-              container.innerHTML = `...`;  // your full HTML here
+              container.innerHTML = `
+                <div class="success-message" style="
+                  text-align: center; padding: 60px 20px; 
+                  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                  border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                  max-width: 600px; margin: 40px auto;
+                ">
+                  <div style="font-size: 4em; color: #00D1FF; margin-bottom: 20px;">✅</div>
+                  <h1 style="font-size: 2.2em; font-weight: 700; color: #333; margin-bottom: 15px;">Thank you!</h1>
+                  <p style="font-size: 1.2em; color: #666; line-height: 1.6; margin-bottom: 20px;">
+                    Your AI Maturity Assessment has been submitted successfully. 
+                    Once all responses are received, we will prepare the report and send it to the survey organiser.
+                  </p>
+                </div>
+              `;
               
-              console.log('5. Looking for progress-container...');
-              const progressContainer = document.querySelector('.progress-container');
-              console.log('6. progressContainer found:', !!progressContainer);
-              console.log('7. progressContainer:', progressContainer);
-              
-              if (progressContainer) {
-                console.log('8. Hiding progress-container');
-                progressContainer.style.display = 'none';
-              } else {
-                console.warn('progress-container still null - skipping hide');
-              }
-              
-              console.log('9. Setting body paddingTop=0');
-              document.body.style.paddingTop = '0';
-              
-              console.log('=== DEBUG showSuccessMessage END ===');
+              document.body.style.paddingTop = '0';  // Remove top padding (was for fixed progress bar)
             }
+
                         
             fetch('https://str4t.app.n8n.cloud/webhook/bc1d81d2-08c4-40b4-a5f8-f9dbc7a04746', {
                 method: 'POST',
@@ -1208,13 +1198,6 @@
                 throw new Error(`HTTP ${response.status}`);
               }
               showSuccessMessage();  // Direct success, no parsing
-            })
-
-            .then(response => {
-              console.log('FETCH DEBUG - Status:', response.status, 'OK:', response.ok);
-              if (!response.ok) throw new Error(`HTTP ${response.status}`);
-              console.log('FETCH DEBUG - Calling showSuccessMessage');
-              showSuccessMessage();
             })
                 
             .catch(error => {
